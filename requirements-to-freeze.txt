@@ -1,0 +1,10 @@
+heatmapz
+matplotlib
+mizani
+numpy
+pandas
+plotnine
+psycopg2-binary
+scipy
+seaborn
+SQLAlchemy
