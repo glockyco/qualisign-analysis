@@ -39,15 +39,15 @@ class ProjectCountPlot:
         (
             ggplot(self._data, aes(x="category", y="count", label="percent"))
             + geom_bar(stat="identity", fill="#1e4f79")
-            + geom_text(va='bottom', size=18)
+            + geom_text(va='bottom', size=24)
             + scale_x_discrete(limits=self._data["category"])
             + scale_y_continuous(labels=comma_format(), expand=[0.1, 0])
             + ggtitle("Projects per Category")
             + xlab("Category")
             + ylab("Number of Projects")
-            + theme_classic(base_size=24, base_family="Helvetica")
-            + theme(axis_text_x=element_text(rotation=45, ha="right"), aspect_ratio=1)
-        ).save(file_path)
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), axis_text_x=element_text(rotation=45, ha="right"))
+        ).save(file_path, width=7, height=7)
 
 
 class PackageCountPlot:
@@ -58,15 +58,15 @@ class PackageCountPlot:
         (
             ggplot(self._data, aes(x="category", y="count", label="percent"))
             + geom_bar(stat="identity", fill="#1e4f79")
-            + geom_text(va='bottom', size=18)
+            + geom_text(va='bottom', size=24)
             + scale_x_discrete(limits=self._data["category"])
             + scale_y_continuous(labels=comma_format(), expand=[0.1, 0])
             + ggtitle("Packages per Category")
             + xlab("Category")
             + ylab("Number of Packages")
-            + theme_classic(base_size=24, base_family="Helvetica")
-            + theme(axis_text_x=element_text(rotation=45, ha="right"), aspect_ratio=1)
-        ).save(file_path)
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), axis_text_x=element_text(rotation=45, ha="right"))
+        ).save(file_path, width=7, height=7)
 
 
 class ClassCountPlot:
@@ -77,20 +77,20 @@ class ClassCountPlot:
         (
             ggplot(self._data, aes(x="category", y="count", label="percent"))
             + geom_bar(stat="identity", fill="#1e4f79")
-            + geom_text(va='bottom', size=18)
+            + geom_text(va='bottom', size=24)
             + scale_x_discrete(limits=self._data["category"])
             + scale_y_continuous(labels=comma_format(), expand=[0.1, 0])
             + ggtitle("Classes per Category")
             + xlab("Category")
             + ylab("Number of Classes")
-            + theme_classic(base_size=24, base_family="Helvetica")
-            + theme(axis_text_x=element_text(rotation=45, ha="right"), aspect_ratio=1)
-        ).save(file_path)
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), axis_text_x=element_text(rotation=45, ha="right"))
+        ).save(file_path, width=7, height=7)
 
 
 if __name__ == "__main__":
     folder = "images/statistics/"
 
-    ProjectCountPlot(ProjectCountData()).create(f"{folder}1_project_counts.png")
-    PackageCountPlot(PackageCountData()).create(f"{folder}1_package_counts.png")
-    ClassCountPlot(ClassCountData()).create(f"{folder}1_class_counts.png")
+    ProjectCountPlot(ProjectCountData()).create(f"{folder}01_project_counts.png")
+    PackageCountPlot(PackageCountData()).create(f"{folder}01_package_counts.png")
+    ClassCountPlot(ClassCountData()).create(f"{folder}01_class_counts.png")

@@ -53,7 +53,7 @@ create materialized view mv_clazz_metrics_ckjm as
         metrics.amc,
         metrics.ca,
         metrics.cbm,
-        metrics.cc,
+        metrics.cc - (metrics.nom - 1) as cc,
         metrics.ce,
         metrics.ic,
         metrics.lcom,
@@ -1080,3 +1080,100 @@ from (
          group by pattern, role
      ) as results
 order by count desc;
+
+
+
+
+
+select * from crosstab(
+    $$
+    with java_projects as(
+        select * from projects
+        inner join project_languages on projects.name = project_languages.project
+        where project_languages.name = 'Java'
+        and project_languages.fraction = 1
+    )
+
+    select 1 as index, 'Download Maven Index' as step, 'remaining' as type, count(*) as count from projects where true
+
+    union all
+    select 2, 'Download Project JARs', 'timeouts', count(*) from projects where jars_download_status = 3
+    union all
+    select 2, 'Download Project JARs', 'remaining', count(*) from projects where jars_download_status = 1
+
+    union all
+    select 3, 'Unpack Project JARs', 'timeouts', count(*) from projects where jars_unpacking_status = 3
+    union all
+    select 3, 'Unpack Project JARs', 'remaining', count(*) from projects where jars_unpacking_status = 1
+
+    ---
+
+    union all
+    select 4, 'Detect Java Versions', 'timeouts', count(*) from projects where java_version_detection_status = 3 or java_version_persistence_status = 3
+    union all
+    select 4, 'Detect Java Versions', 'remaining', count(*) from projects where java_version_persistence_status = 1
+
+    union all
+    select 5, 'Detect Programming Languages', 'timeouts', count(*) from projects where language_detection_status = 3 or language_persistence_status = 3
+    union all
+    select 5, 'Detect Programming Languages', 'remaining', count(*) from projects where language_persistence_status = 1
+
+    union all
+    select 6, 'Filter Projects', 'remaining', count(*) from java_projects
+
+    ---
+
+    union all
+    select 7, 'Calculate Software Metrics', 'timeouts', count(*) from java_projects where metrics_calculation_status = 3 or metrics_persistence_status = 3
+    union all
+    select 7, 'Calculate Software Metrics', 'remaining', count(*) from java_projects where metrics_persistence_status = 1
+
+    union all
+    select 8, 'Detect Design Patterns', 'timeouts', count(*) from java_projects where pattern_detection_status = 3 or pattern_persistence_status = 3
+    union all
+    select 8, 'Detect Design Patterns', 'remaining', count(*) from java_projects where pattern_persistence_status = 1
+
+    order by index, type
+    $$,
+    $$
+        values ('timeouts'), ('remaining')
+    $$
+) as ct(index int, step varchar, timeouts int, remaining int);
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+create materialized view mv__plot_project_sizes as
+    select loc_sum as loc, 'All' as category
+    from mv_projects_features
+    union all
+    select loc_sum as loc, case when is_pattern_project is true then 'Pattern' else 'Non-Pattern' end as category
+    from mv_projects_features;
+
+create materialized view mv__plot_pakkage_sizes as
+    select loc_sum as loc, 'All' as category
+    from mv_pakkages_features
+    union all
+    select loc_sum as loc, case when is_pattern_pakkage is true then 'Pattern' else 'Non-Pattern' end as category
+    from mv_pakkages_features;
+
+create materialized view mv__plot_clazz_sizes as
+    select loc as loc, 'All' as category
+    from mv_clazzes_features
+    union all
+    select loc as loc, case when is_pattern_clazz is true then 'Pattern' else 'Non-Pattern' end as category
+    from mv_clazzes_features;
+
+--------------------------------------------------------------------------------
+
+create materialized view mv__plot_pattern_counts as
+    with total as (select 'All' as pattern, count(*) as count, 1 as fraction from mv_pattern_instances)
+    --select * from total
+    --union all
+    select pattern, count(*) as count, count(*)::numeric / (select total.count from total) as fraction
+    from (select replace(replace(pattern, 'Proxy2', 'Proxy'), '(Object)Adapter', 'Adapter') as pattern from mv_pattern_instances) as a
+    group by pattern
+    order by count desc
+
+--------------------------------------------------------------------------------

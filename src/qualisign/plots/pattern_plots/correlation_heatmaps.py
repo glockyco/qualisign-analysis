@@ -54,18 +54,18 @@ class PatternCorrelationData:
         return data
 
 
-class MetricsCorrelationPlot:
+class PatternCorrelationPlot:
     def __init__(self, data: PatternCorrelationData):
         self._data = data.read()
 
     def create(self, file_path: str) -> None:
-        plt.figure(figsize=(15, 15))
+        plt.figure(figsize=(12, 11.5))
 
-        plt.gcf().subplots_adjust(bottom=0.2, left=0.2)
+        plt.gcf().subplots_adjust(bottom=0.25, left=0.25)
 
-        small_size = 14
+        small_size = 16
         medium_size = 16
-        bigger_size = 18
+        bigger_size = 16
 
         plt.rc('font', size=small_size)  # controls default text sizes
         plt.rc('axes', titlesize=small_size)  # fontsize of the axes title
@@ -84,7 +84,7 @@ class MetricsCorrelationPlot:
 
             size=self._data["correlation"].abs(),
             size_range=[0, 1],
-            size_scale=500,
+            size_scale=900,
 
             color=self._data["correlation"],
             color_range=[-1, 1],
@@ -102,4 +102,4 @@ class MetricsCorrelationPlot:
 if __name__ == "__main__":
     folder = "images/statistics/"
 
-    MetricsCorrelationPlot(PatternCorrelationData(ProjectData())).create(f"{folder}9_project_patterns_correlations.png")
+    PatternCorrelationPlot(PatternCorrelationData(ProjectData())).create(f"{folder}09_project_patterns_correlations.pdf")

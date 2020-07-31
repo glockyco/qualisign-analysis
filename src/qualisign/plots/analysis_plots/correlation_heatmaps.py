@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 import seaborn as sns
-from heatmap import corrplot, heatmap
+from heatmap import heatmap
 from matplotlib import pyplot as plt
 from pandas import DataFrame
 
@@ -115,13 +115,13 @@ class QmoodQaCorrelationPlot:
         self._data = data.read()
 
     def create(self, file_path: str) -> None:
-        plt.figure(figsize=(15, 7.5))
+        plt.figure(figsize=(12, 6.7))
 
-        plt.gcf().subplots_adjust(bottom=0.4, left=0.2)
+        plt.gcf().subplots_adjust(bottom=0.45, left=0.2)
 
-        small_size = 14
+        small_size = 16
         medium_size = 16
-        bigger_size = 18
+        bigger_size = 16
 
         plt.rc('font', size=small_size)  # controls default text sizes
         plt.rc('axes', titlesize=small_size)  # fontsize of the axes title
@@ -140,7 +140,7 @@ class QmoodQaCorrelationPlot:
 
             size=self._data["correlation"].abs(),
             size_range=[0, 1],
-            size_scale=500,
+            size_scale=1000,
 
             color=self._data["correlation"],
             color_range=[-1, 1],
@@ -160,13 +160,13 @@ class QmoodCorrelationPlot:
         self._data = data.read()
 
     def create(self, file_path: str) -> None:
-        plt.figure(figsize=(15, 12))
+        plt.figure(figsize=(12, 10.2))
 
-        plt.gcf().subplots_adjust(bottom=0.25)
+        plt.gcf().subplots_adjust(bottom=0.3)
 
-        small_size = 14
+        small_size = 16
         medium_size = 16
-        bigger_size = 18
+        bigger_size = 16
 
         plt.rc('font', size=small_size)  # controls default text sizes
         plt.rc('axes', titlesize=small_size)  # fontsize of the axes title
@@ -185,7 +185,7 @@ class QmoodCorrelationPlot:
 
             size=self._data["correlation"].abs(),
             size_range=[0, 1],
-            size_scale=500,
+            size_scale=1300,
 
             color=self._data["correlation"],
             color_range=[-1, 1],
@@ -205,13 +205,13 @@ class MiscMetricsCorrelationPlot:
         self._data = data.read()
 
     def create(self, file_path: str) -> None:
-        plt.figure(figsize=(15, 13))
+        plt.figure(figsize=(12, 11.0))
 
-        plt.gcf().subplots_adjust(bottom=0.25)
+        plt.gcf().subplots_adjust(bottom=0.28)
 
-        small_size = 14
+        small_size = 16
         medium_size = 16
-        bigger_size = 18
+        bigger_size = 16
 
         plt.rc('font', size=small_size)  # controls default text sizes
         plt.rc('axes', titlesize=small_size)  # fontsize of the axes title
@@ -230,7 +230,7 @@ class MiscMetricsCorrelationPlot:
 
             size=self._data["correlation"].abs(),
             size_range=[0, 1],
-            size_scale=500,
+            size_scale=1500,
 
             color=self._data["correlation"],
             color_range=[-1, 1],
@@ -248,6 +248,6 @@ class MiscMetricsCorrelationPlot:
 if __name__ == "__main__":
     folder = "images/analysis/"
 
-    QmoodQaCorrelationPlot(QmoodQaCorrelationData()).create(f"{folder}11_qmood_qa_correlations.png")
-    QmoodCorrelationPlot(QmoodCorrelationData()).create(f"{folder}13_qmood_correlations.png")
-    MiscMetricsCorrelationPlot(MiscMetricsCorrelationData()).create(f"{folder}15_misc_correlations.png")
+    QmoodQaCorrelationPlot(QmoodQaCorrelationData()).create(f"{folder}11_qmood_qa_correlations.pdf")
+    QmoodCorrelationPlot(QmoodCorrelationData()).create(f"{folder}13_qmood_correlations.pdf")
+    MiscMetricsCorrelationPlot(MiscMetricsCorrelationData()).create(f"{folder}15_misc_correlations.pdf")

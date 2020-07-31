@@ -30,18 +30,18 @@ class PatternCountPlot:
         (
             ggplot(self._data, aes(x="pattern", y="count", label="fraction"))
             + geom_bar(stat="identity", fill="#1e4f79")
-            + geom_text(va='bottom', size=18, format_string='{:.1%}')
+            + geom_text(va='bottom', size=24, format_string='{:.1%}')
             + scale_x_discrete(limits=self._data["pattern"])
             + scale_y_continuous(labels=comma_format(), expand=[0.1, 0])
             + ggtitle("Design Pattern Counts")
             + xlab("Design Pattern")
             + ylab("Count")
-            + theme_classic(base_size=24, base_family="Helvetica")
-            + theme(axis_text_x=element_text(rotation=45, ha="right"))
-        ).save(file_path, width=18, height=6)
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), axis_text_x=element_text(rotation=45, ha="right"))
+        ).save(file_path, width=24, height=8)
 
 
 if __name__ == "__main__":
     folder = "images/statistics/"
 
-    PatternCountPlot(PatternCountData()).create(f"{folder}7_pattern_counts.png")
+    PatternCountPlot(PatternCountData()).create(f"{folder}07_pattern_counts.pdf")

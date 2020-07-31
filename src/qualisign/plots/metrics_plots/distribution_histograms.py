@@ -1,9 +1,10 @@
 import os
 
 import pandas as pd
+from mizani.formatters import comma_format
 from pandas import DataFrame
 from plotnine import ggplot, aes, ggtitle, xlab, ylab, scale_y_continuous, theme_classic, theme, geom_histogram, \
-    scale_x_continuous, facet_wrap
+    scale_x_continuous, facet_wrap, element_text
 
 from qualisign.configuration import ENGINE, QUALITY_ATTRIBUTES, QMOOD_METRICS, MISC_METRICS, FEATURE_NAMES
 from qualisign.utils.asinh_trans import asinh_trans, asinh_labels
@@ -33,11 +34,11 @@ class QmoodQaMetricsData:
         self._data = data
 
     def read(self) -> DataFrame:
-        columns = [f"{metric}_avg" for metric in QUALITY_ATTRIBUTES]
+        columns = [f"{metric}_avg" for metric in QUALITY_ATTRIBUTES] + ["is_pattern_project"]
 
         data = self._data.read()
         metrics = data[columns].rename(columns={f"{column}_avg": name for column, name in FEATURE_NAMES.items()})
-        result = metrics.melt()
+        result = metrics.melt(["is_pattern_project"])
 
         return result
 
@@ -47,11 +48,11 @@ class QmoodMetricsData:
         self._data = data
 
     def read(self) -> DataFrame:
-        columns = [f"{metric}_avg" for metric in QMOOD_METRICS]
+        columns = [f"{metric}_avg" for metric in QMOOD_METRICS] + ["is_pattern_project"]
 
         data = self._data.read()
         metrics = data[columns].rename(columns={f"{column}_avg": name for column, name in FEATURE_NAMES.items()})
-        result = metrics.melt()
+        result = metrics.melt(["is_pattern_project"])
 
         return result
 
@@ -61,13 +62,13 @@ class MiscMetricsData:
         self._data = data
 
     def read(self) -> DataFrame:
-        columns = [f"{metric}_avg" for metric in MISC_METRICS]
+        columns = [f"{metric}_avg" for metric in MISC_METRICS] + ["is_pattern_project"]
 
         data = self._data.read()
         metrics = data[columns].rename(columns={f"{column}_avg": name for column, name in FEATURE_NAMES.items()})
         metrics["LOC"] = data["loc_sum"]
 
-        result = metrics.melt()
+        result = metrics.melt(["is_pattern_project"])
 
         return result
 
@@ -82,12 +83,12 @@ class QmoodQaMetricsDistributionsPlot:
             + geom_histogram(bins=100, fill="#1e4f79")
             + facet_wrap(facets="variable", scales="free", ncol=3)
             + scale_x_continuous(trans=asinh_trans(), labels=asinh_labels)
-            #+ scale_y_continuous(labels=lambda l: ["%.2f%%" % (v * 100 / len(self._data)) for v in l])
+            + scale_y_continuous(labels=comma_format())
             + ggtitle("Distributions of QMOOD Quality Attributes")
             + xlab("Quality Attribute Value")
             + ylab("Number of Projects")
-            + theme_classic(base_size=28, base_family="Helvetica")
-            + theme(subplots_adjust={"wspace": 0.25, "hspace": 0.5})
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), subplots_adjust={"wspace": 0.35, "hspace": 0.35})
         ).save(file_path, width=24, height=12)
 
 
@@ -101,12 +102,12 @@ class QmoodMetricsDistributionsPlot:
             + geom_histogram(bins=100, fill="#1e4f79")
             + facet_wrap(facets="variable", scales="free", ncol=3)
             + scale_x_continuous(trans=asinh_trans(), labels=asinh_labels)
-            #+ scale_y_continuous(labels=lambda l: ["%.2f%%" % (v * 100 / len(self._data)) for v in l])
+            + scale_y_continuous(labels=comma_format())
             + ggtitle("Distributions of QMOOD Design Properties")
             + xlab("Design Property Value")
             + ylab("Number of Projects")
-            + theme_classic(base_size=28, base_family="Helvetica")
-            + theme(subplots_adjust={"wspace": 0.25, "hspace": 0.5})
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), subplots_adjust={"wspace": 0.35, "hspace": 0.35})
         ).save(file_path, width=24, height=24)
 
 
@@ -120,18 +121,18 @@ class MiscMetricsDistributionsPlot:
             + geom_histogram(bins=100, fill="#1e4f79")
             + facet_wrap(facets="variable", scales="free", ncol=3)
             + scale_x_continuous(trans=asinh_trans(), labels=asinh_labels)
-            #+ scale_y_continuous(labels=lambda l: ["%.2f%%" % (v * 100 / len(self._data)) for v in l])
+            + scale_y_continuous(labels=comma_format())
             + ggtitle("Distributions of C&K+ Metrics")
             + xlab("Metric Value")
             + ylab("Number of Projects")
-            + theme_classic(base_size=28, base_family="Helvetica")
-            + theme(subplots_adjust={"wspace": 0.25, "hspace": 0.5})
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), subplots_adjust={"wspace": 0.35, "hspace": 0.35})
         ).save(file_path, width=24, height=24)
 
 
 if __name__ == "__main__":
     folder = "images/statistics/"
 
-    QmoodQaMetricsDistributionsPlot(QmoodQaMetricsData(ProjectData())).create(f"{folder}3_qmood_qa_distributions.png")
-    QmoodMetricsDistributionsPlot(QmoodMetricsData(ProjectData())).create(f"{folder}4_qmood_distributions.png")
-    MiscMetricsDistributionsPlot(MiscMetricsData(ProjectData())).create(f"{folder}5_misc_distributions.png")
+    QmoodQaMetricsDistributionsPlot(QmoodQaMetricsData(ProjectData())).create(f"{folder}03_qmood_qa_distributions.pdf")
+    QmoodMetricsDistributionsPlot(QmoodMetricsData(ProjectData())).create(f"{folder}04_qmood_distributions.pdf")
+    MiscMetricsDistributionsPlot(MiscMetricsData(ProjectData())).create(f"{folder}05_misc_distributions.pdf")

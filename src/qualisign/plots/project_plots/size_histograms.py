@@ -1,9 +1,10 @@
 import os
 
 import pandas as pd
+from mizani.formatters import comma_format
 from pandas import DataFrame
 from plotnine import ggplot, aes, ggtitle, xlab, ylab, theme_classic, theme, geom_histogram, \
-    scale_x_continuous, element_text, facet_grid
+    scale_x_continuous, element_text, facet_grid, scale_y_continuous
 
 from qualisign.configuration import ENGINE
 from qualisign.utils.asinh_trans import asinh_trans, asinh_labels
@@ -58,13 +59,14 @@ class ProjectSizesPlot:
             + geom_histogram(bins=100, fill="#1e4f79")
             + facet_grid(facets="category ~ .", scales='free_y')
             + scale_x_continuous(trans=asinh_trans(), labels=asinh_labels)
+            + scale_y_continuous(labels=comma_format())
             #+ scale_y_continuous(labels=lambda l: ["%.2f%%" % (v * 100 / len(self._data)) for v in l])
             + ggtitle("Project Sizes")
             + xlab("Lines of Code")
             + ylab("Number of Projects")
-            + theme_classic(base_size=28, base_family="Helvetica")
-            + theme(subplots_adjust={"hspace": 0.1})
-        ).save(file_path, width=8, height=12)
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), subplots_adjust={"hspace": 0.1})
+        ).save(file_path, width=8, height=18)
 
 
 class PackageSizesPlot:
@@ -77,13 +79,14 @@ class PackageSizesPlot:
             + geom_histogram(bins=100, fill="#1e4f79")
             + facet_grid(facets="category ~ .", scales='free_y')
             + scale_x_continuous(trans=asinh_trans(), labels=asinh_labels)
+            + scale_y_continuous(labels=comma_format())
             #+ scale_y_continuous(labels=lambda l: ["%.2f%%" % (v * 100 / len(self._data)) for v in l])
             + ggtitle("Package Sizes")
             + xlab("Lines of Code")
             + ylab("Number of Packages")
-            + theme_classic(base_size=28, base_family="Helvetica")
-            + theme(subplots_adjust={"hspace": 0.1})
-        ).save(file_path, width=8, height=12)
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), subplots_adjust={"hspace": 0.1})
+        ).save(file_path, width=8, height=18)
 
 
 class ClassSizesPlot:
@@ -96,18 +99,19 @@ class ClassSizesPlot:
             + geom_histogram(bins=100, fill="#1e4f79")
             + facet_grid(facets="category ~ .", scales='free_y')
             + scale_x_continuous(trans=asinh_trans(), labels=asinh_labels)
+            + scale_y_continuous(labels=comma_format())
             #+ scale_y_continuous(labels=lambda l: ["%.2f%%" % (v * 100 / len(self._data)) for v in l])
             + ggtitle("Class Sizes")
             + xlab("Lines of Code")
             + ylab("Number of Classes")
-            + theme_classic(base_size=28, base_family="Helvetica")
-            + theme(subplots_adjust={"hspace": 0.1})
-        ).save(file_path, width=8, height=12)
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(text=element_text(size=32), subplots_adjust={"hspace": 0.1})
+        ).save(file_path, width=8, height=18)
 
 
 if __name__ == "__main__":
     folder = "images/statistics/"
 
-    ProjectSizesPlot(ProjectSizeData()).create(f"{folder}2_project_sizes.png")
-    PackageSizesPlot(PackageSizeData()).create(f"{folder}2_package_sizes.png")
-    ClassSizesPlot(ClassSizeData()).create(f"{folder}2_class_sizes.png")
+    ProjectSizesPlot(ProjectSizeData()).create(f"{folder}02_project_sizes.pdf")
+    PackageSizesPlot(PackageSizeData()).create(f"{folder}02_package_sizes.pdf")
+    ClassSizesPlot(ClassSizeData()).create(f"{folder}02_class_sizes.pdf")

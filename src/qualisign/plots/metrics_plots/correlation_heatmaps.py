@@ -102,13 +102,13 @@ class MetricsCorrelationPlot:
         self._data = data.read()
 
     def create(self, file_path: str) -> None:
-        plt.figure(figsize=(15, 15))
+        plt.figure(figsize=(12, 11.7))
 
-        #plt.gcf().subplots_adjust(bottom=0.3, left=0.15)
+        plt.gcf().subplots_adjust(bottom=0.2, left=0.2)
 
-        small_size = 14
+        small_size = 16
         medium_size = 16
-        bigger_size = 18
+        bigger_size = 16
 
         plt.rc('font', size=small_size)  # controls default text sizes
         plt.rc('axes', titlesize=small_size)  # fontsize of the axes title
@@ -127,7 +127,7 @@ class MetricsCorrelationPlot:
 
             size=self._data["correlation"].abs(),
             size_range=[0, 1],
-            size_scale=500,
+            size_scale=300,
 
             color=self._data["correlation"],
             color_range=[-1, 1],
@@ -145,6 +145,6 @@ class MetricsCorrelationPlot:
 if __name__ == "__main__":
     folder = "images/statistics/"
 
-    MetricsCorrelationPlot(MetricsCorrelationData(ClassData())).create(f"{folder}6_class_metrics_correlations.png")
-    MetricsCorrelationPlot(MetricsCorrelationData(PackageData())).create(f"{folder}6_package_metrics_correlations.png")
-    MetricsCorrelationPlot(MetricsCorrelationData(ProjectData())).create(f"{folder}6_project_metrics_correlations.png")
+    #MetricsCorrelationPlot(MetricsCorrelationData(ClassData())).create(f"{folder}06_class_metrics_correlations.pdf")
+    #MetricsCorrelationPlot(MetricsCorrelationData(PackageData())).create(f"{folder}06_package_metrics_correlations.pdf")
+    MetricsCorrelationPlot(MetricsCorrelationData(ProjectData())).create(f"{folder}06_project_metrics_correlations.pdf")

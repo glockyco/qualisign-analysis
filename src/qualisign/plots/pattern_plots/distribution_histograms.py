@@ -1,9 +1,10 @@
 import os
 
 import pandas as pd
+from mizani.formatters import comma_format
 from pandas import DataFrame
 from plotnine import ggplot, aes, ggtitle, xlab, ylab, theme_classic, geom_histogram, \
-    facet_wrap, coord_cartesian
+    facet_wrap, theme, element_text, scale_y_continuous, xlim, scale_x_continuous
 
 from qualisign.configuration import ENGINE, DESIGN_PATTERNS, DESIGN_PATTERN_NAMES
 
@@ -52,18 +53,21 @@ class PatternFractionDistributionsPlot:
         (
             ggplot(self._data, aes("value"))
             + geom_histogram(bins=100, fill="#1e4f79")
-            + facet_wrap(facets="variable", ncol=3)
-            #+ scale_y_continuous(labels=lambda l: ["%.2f%%" % (v * 100 / len(self._data)) for v in l])
-            + coord_cartesian()
+            + facet_wrap(facets="variable", scales="free", ncol=3)
+            + xlim(0, 1)
+            + scale_y_continuous(labels=comma_format())
             + ggtitle("Intensity of Design Pattern Use")
             + xlab("Percentage of Classes Participating in Design Pattern")
             + ylab("Number of Projects")
-            + theme_classic(base_size=28, base_family="Helvetica")
-            #+ theme(subplots_adjust={"wspace": 0.25, "hspace": 0.5})
+            + theme_classic(base_size=32, base_family="Helvetica")
+            + theme(
+                text=element_text(size=32),
+                axis_title_y=element_text(margin={"r": 40}),
+                subplots_adjust={"wspace": 0.3, "hspace": 0.5})
         ).save(file_path, width=24, height=24)
 
 
 if __name__ == "__main__":
     folder = "images/statistics/"
 
-    PatternFractionDistributionsPlot(PatternFractionData(ProjectData())).create(f"{folder}8_pattern_distributions.png")
+    PatternFractionDistributionsPlot(PatternFractionData(ProjectData())).create(f"{folder}08_pattern_distributions.pdf")
